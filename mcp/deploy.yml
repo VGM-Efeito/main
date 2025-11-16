@@ -1,0 +1,33 @@
+resources:
+  - type: Microsoft.Web/sites
+    apiVersion: 2021-02-01
+    name: my-playwright-app
+    location: [resourceGroup().location]
+    properties:
+      serverFarmId: [resourceId('Microsoft.Web/serverfarms', 'myAppServicePlan')]
+      siteConfig:
+        appSettings:
+          - name: "NODE_ENV"
+            value: "production"
+          - name: "MCP_INTEGRATION"
+            value: "enabled"
+  - type: Microsoft.Web/serverfarms
+    apiVersion: 2021-02-01
+    name: myAppServicePlan
+    location: [resourceGroup().location]
+    sku:
+      name: S1
+      tier: Standard
+      capacity: 1
+  - type: Microsoft.Storage/storageAccounts
+    apiVersion: 2021-02-01
+    name: mystorageaccount
+    location: [resourceGroup().location]
+    sku:
+      name: Standard_LRS
+    kind: StorageV2
+
+outputs:
+  webAppUrl:
+    type: string
+    value: "[concat('https://', parameters('my-playwright-app').name, '.azurewebsites.net')]"
